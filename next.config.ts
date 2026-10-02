@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
+import "./src/env";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
+  poweredByHeader: false,
 };
 
 export default nextConfig;
