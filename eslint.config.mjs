@@ -5,19 +5,10 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  globalIgnores([
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-    "_legacy/**",
-  ]),
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "_legacy/**"]),
   {
     rules: {
-      "no-restricted-imports": [
-        "error",
-        { patterns: ["**/_legacy/**", "**/_legacy"] },
-      ],
+      "no-restricted-imports": ["error", { patterns: ["**/_legacy/**", "**/_legacy"] }],
     },
   },
 ]);
