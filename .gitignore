@@ -47,3 +47,6 @@ _legacy/
 
 # Prisma generated client
 /src/generated
+
+.vercel
+.env*
