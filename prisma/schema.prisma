@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ───────────── Enums ─────────────
+
+enum SummarySource {
+  TEXT
+  URL
+  FILE
+}
+
+enum SummaryMode {
+  EXECUTIVE_BRIEF
+  KEY_POINTS
+  DEEP_DIVE
+}
+
+enum SummaryLength {
+  SHORT
+  MEDIUM
+  LONG
+}
+
+enum SummaryTone {
+  NEUTRAL
+  PROFESSIONAL
+  CONVERSATIONAL
+  ACADEMIC
+}
+
+enum SummaryStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum UsageKind {
+  SUMMARY
+}
+
+// ───────────── Auth (Better Auth core) ─────────────
+
+model User {
+  id            String    @id
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions      Session[]
+  accounts      Account[]
+  summaries     Summary[]
+  usageCounters UsageCounter[]
+  preference    UserPreference?
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+// ───────────── Product ─────────────
+
+model Summary {
+  id             String        @id @default(cuid())
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title          String
+  sourceType     SummarySource
+  sourceUrl      String?
+  sourceName     String?
+  /// First ~500 characters of the input only. Full source text is never stored.
+  sourceExcerpt  String?
+
+  mode           SummaryMode
+  length         SummaryLength
+  tone           SummaryTone
+  outputLanguage String        @default("en")
+
+  status         SummaryStatus @default(PENDING)
+  resultMarkdown String?
+  errorCode      String?
+  aiModel        String?
+  inputChars     Int           @default(0)
+  inputTokens    Int?
+  outputTokens   Int?
+
+  isFavorite     Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([userId, createdAt(sort: Desc), id])
+  @@index([userId, isFavorite, createdAt(sort: Desc)])
+  @@index([userId, mode, createdAt(sort: Desc)])
+  @@map("summary")
+}
+
+/// One row per user, usage kind, and billing period. Quota is claimed with an atomic
+/// conditional increment (built in Loop 4), never with a read-then-write.
+model UsageCounter {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind        UsageKind
+  periodStart DateTime
+  periodEnd   DateTime
+  used        Int       @default(0)
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, kind, periodStart])
+  @@map("usage_counter")
+}
+
+model UserPreference {
+  userId         String        @id
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  defaultMode    SummaryMode   @default(EXECUTIVE_BRIEF)
+  defaultLength  SummaryLength @default(MEDIUM)
+  defaultTone    SummaryTone   @default(NEUTRAL)
+  outputLanguage String        @default("en")
+  updatedAt      DateTime      @updatedAt
+
+  @@map("user_preference")
+}

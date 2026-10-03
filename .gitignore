@@ -44,3 +44,6 @@ next-env.d.ts
 
 # Old project, reference only
 _legacy/
+
+# Prisma generated client
+/src/generated
