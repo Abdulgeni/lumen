@@ -16,11 +16,15 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
-    "db:check": "tsx --env-file=.env.local scripts/db-check.ts"
+    "db:check": "tsx --env-file=.env.local scripts/db-check.ts",
+    "test": "vitest run",
+    "test:db": "vitest run --config vitest.db.config.ts",
+    "gemini:check": "tsx --env-file=.env.local scripts/gemini-check.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
     "@better-auth/prisma-adapter": "^1.7.7",
+    "@google/genai": "^2.27.0",
     "@prisma/adapter-neon": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "@t3-oss/env-nextjs": "^0.13.11",
@@ -50,7 +54,8 @@
     "prisma": "^7.10.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^5.0.3"
   },
   "engines": {
     "node": "22.x"
