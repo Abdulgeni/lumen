@@ -12,6 +12,23 @@ export class GenerationError extends Error {
   }
 }
 
+export type Attachment = { mimeType: string; data: Uint8Array };
+
+function buildContents(userContent: string, attachments: Attachment[] | undefined): unknown {
+  if (!attachments?.length) return userContent;
+  return [
+    {
+      role: "user",
+      parts: [
+        ...attachments.map((a) => ({
+          inlineData: { mimeType: a.mimeType, data: Buffer.from(a.data).toString("base64") },
+        })),
+        { text: userContent },
+      ],
+    },
+  ];
+}
+
 export type GenAiChunk = {
   text?: string | undefined;
   usageMetadata?:
@@ -26,7 +43,7 @@ export type GenAiLike = {
   models: {
     generateContentStream(params: {
       model: string;
-      contents: string;
+      contents: unknown;
       config?: Record<string, unknown>;
     }): Promise<AsyncIterable<GenAiChunk>>;
   };
@@ -82,12 +99,14 @@ export async function* streamSummary(
     models: { primary: string; fallback?: string | undefined };
     systemInstruction: string;
     userContent: string;
+    attachments?: Attachment[] | undefined;
     signal?: AbortSignal | undefined;
     maxOutputTokens?: number;
   },
 ): AsyncGenerator<StreamEvent> {
   const { primary, fallback } = params.models;
   const candidates = fallback && fallback !== primary ? [primary, fallback] : [primary];
+  const contents = buildContents(params.userContent, params.attachments);
   let lastError: unknown;
 
   for (const model of candidates) {
@@ -95,7 +114,7 @@ export async function* streamSummary(
     try {
       const stream = await ai.models.generateContentStream({
         model,
-        contents: params.userContent,
+        contents,
         config: {
           systemInstruction: params.systemInstruction,
           maxOutputTokens: params.maxOutputTokens ?? 16_384,

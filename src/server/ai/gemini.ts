@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import type { ModelTier } from "@/lib/plans";
 import { env } from "../../env";
-import { type GenAiLike, streamSummary } from "./stream";
+import { type Attachment, type GenAiLike, streamSummary } from "./stream";
 
 let client: GoogleGenAI | undefined;
 const getClient = () => (client ??= new GoogleGenAI({ apiKey: env.GEMINI_API_KEY }));
@@ -17,6 +17,7 @@ export function generateSummaryStream(params: {
   tier: ModelTier;
   systemInstruction: string;
   userContent: string;
+  attachments?: Attachment[] | undefined;
   signal?: AbortSignal | undefined;
 }) {
   return streamSummary(
@@ -26,6 +27,7 @@ export function generateSummaryStream(params: {
       models: modelsForTier(params.tier),
       systemInstruction: params.systemInstruction,
       userContent: params.userContent,
+      attachments: params.attachments,
       signal: params.signal,
     },
   );

@@ -14,6 +14,8 @@ export const env = createEnv({
     GEMINI_MODEL_LITE: z.string().min(1).default("gemini-3.5-flash-lite"),
     GEMINI_MODEL_STANDARD: z.string().min(1).default("gemini-3.8-flash"),
     GEMINI_MODEL_FALLBACK: z.string().min(1).default("gemini-3.5-flash"),
+    UPSTASH_REDIS_REST_URL: z.url(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().min(10),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.url(),
@@ -31,6 +33,8 @@ export const env = createEnv({
     GEMINI_MODEL_LITE: process.env.GEMINI_MODEL_LITE,
     GEMINI_MODEL_STANDARD: process.env.GEMINI_MODEL_STANDARD,
     GEMINI_MODEL_FALLBACK: process.env.GEMINI_MODEL_FALLBACK,
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,
