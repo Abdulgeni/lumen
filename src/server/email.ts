@@ -104,3 +104,19 @@ export function sendAccountExistsEmail({ to }: { to: string }) {
     }),
   );
 }
+
+export function sendAccountDeletionEmail({ to, url }: { to: string; url: string }) {
+  inBackground(() =>
+    deliver(to, {
+      subject: "Confirm deleting your Lumen account",
+      heading: "Delete your account?",
+      paragraphs: [
+        "You asked to permanently delete your Lumen account and all of your saved summaries. This cannot be undone.",
+        "For your security, this link expires soon.",
+      ],
+      cta: { label: "Delete my account", url },
+      footnote:
+        "If you did not request this, ignore this email and your account stays exactly as it is.",
+    }),
+  );
+}

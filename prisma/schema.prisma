@@ -133,6 +133,8 @@ model Summary {
   sourceName     String?
   /// First ~500 characters of the input only. Full source text is never stored.
   sourceExcerpt  String?
+  /// Plain-text snippet (~240 chars) for history lists, so lists never load full results.
+  preview        String?
 
   mode           SummaryMode
   length         SummaryLength
@@ -154,6 +156,7 @@ model Summary {
   @@index([userId, createdAt(sort: Desc), id])
   @@index([userId, isFavorite, createdAt(sort: Desc)])
   @@index([userId, mode, createdAt(sort: Desc)])
+  @@index([userId, status, createdAt])
   @@map("summary")
 }
 

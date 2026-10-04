@@ -69,4 +69,8 @@ describe("parseFetchableUrl", () => {
       UnsafeUrlError,
     );
   });
+
+  it("reports the hostname problem before the port problem", () => {
+    expect(() => parseFetchableUrl("http://localhost:3000")).toThrow(/publicly reachable/);
+  });
 });

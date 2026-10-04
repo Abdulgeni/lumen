@@ -85,9 +85,6 @@ export function parseFetchableUrl(input: string): URL {
   if (url.username || url.password) {
     throw new UnsafeUrlError("INVALID_URL", "Links with embedded credentials are not supported.");
   }
-  if (!ALLOWED_PORTS.has(url.port)) {
-    throw new UnsafeUrlError("BLOCKED_HOST", "Only standard web ports are supported.");
-  }
 
   const host = url.hostname
     .replace(/^\[|\]$/g, "")
@@ -104,5 +101,10 @@ export function parseFetchableUrl(input: string): URL {
   ) {
     throw new UnsafeUrlError("BLOCKED_HOST", "That address is not publicly reachable.");
   }
+
+  if (!ALLOWED_PORTS.has(url.port)) {
+    throw new UnsafeUrlError("BLOCKED_HOST", "Only standard web ports are supported.");
+  }
+
   return url;
 }

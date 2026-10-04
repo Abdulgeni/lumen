@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkEntitlements } from "./plans";
+import { checkEntitlements, nextPlan } from "./plans";
 
 const base = { mode: "EXECUTIVE_BRIEF", sourceType: "TEXT", inputWords: 100 } as const;
 
@@ -50,5 +50,13 @@ describe("checkEntitlements", () => {
         fileBytes: 1_000_000,
       }),
     ).toBeNull();
+  });
+});
+
+describe("nextPlan", () => {
+  it("walks up the tiers", () => {
+    expect(nextPlan("free")).toBe("pro");
+    expect(nextPlan("pro")).toBe("team");
+    expect(nextPlan("team")).toBeNull();
   });
 });

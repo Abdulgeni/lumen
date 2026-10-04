@@ -109,3 +109,8 @@ export function checkEntitlements(
   }
   return null;
 }
+
+/** The next tier up, used for upgrade prompts. */
+export function nextPlan(id: PlanId): PlanId | null {
+  return PLAN_IDS[PLAN_IDS.indexOf(id) + 1] ?? null;
+}

@@ -37,6 +37,12 @@ export const OUTPUT_LANGUAGES = [
   { code: "ko", name: "Korean" },
 ] as const;
 
+export type LanguageCode = (typeof OUTPUT_LANGUAGES)[number]["code"];
+export const LANGUAGE_CODES = OUTPUT_LANGUAGES.map((l) => l.code) as unknown as readonly [
+  LanguageCode,
+  ...LanguageCode[],
+];
+
 export function languageName(code: string): string {
   return OUTPUT_LANGUAGES.find((l) => l.code === code)?.name ?? "English";
 }

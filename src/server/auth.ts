@@ -3,7 +3,12 @@ import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { env } from "../env";
 import { db } from "./db";
-import { sendAccountExistsEmail, sendPasswordResetEmail, sendVerificationEmail } from "./email";
+import {
+  sendAccountDeletionEmail,
+  sendAccountExistsEmail,
+  sendPasswordResetEmail,
+  sendVerificationEmail,
+} from "./email";
 
 export const auth = betterAuth({
   baseURL: env.NEXT_PUBLIC_APP_URL,
@@ -47,6 +52,16 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24,
   },
 
+  user: {
+    deleteUser: {
+      enabled: true,
+      sendDeleteAccountVerification: async ({ user, url }) => {
+        sendAccountDeletionEmail({ to: user.email, url });
+      },
+      // Loop 6 adds a beforeDelete hook that cancels any Stripe subscription first.
+    },
+  },
+
   rateLimit: {
     storage: "database",
     window: 60,
@@ -56,6 +71,7 @@ export const auth = betterAuth({
       "/sign-up/email": { window: 60, max: 3 },
       "/request-password-reset": { window: 300, max: 3 },
       "/send-verification-email": { window: 300, max: 3 },
+      "/delete-user": { window: 300, max: 3 },
     },
   },
 

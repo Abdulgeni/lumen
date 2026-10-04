@@ -141,7 +141,7 @@ export async function safeFetch(
   options: SafeFetchOptions = {},
 ): Promise<SafeFetchResult> {
   const {
-    maxBytes = 2 * 1024 * 1024,
+    maxBytes = 5 * 1024 * 1024,
     timeoutMs = 10_000,
     maxRedirects = 3,
     fetchImpl = defaultFetch,
