@@ -411,3 +411,25 @@
   --normal-text: var(--card-foreground);
   --normal-border: var(--border);
 }
+/* Slow, weighted reveal for below-the-fold sections */
+@layer components {
+  .reveal {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition:
+      opacity 900ms var(--ease-weighted),
+      transform 900ms var(--ease-weighted);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .reveal[data-visible="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
