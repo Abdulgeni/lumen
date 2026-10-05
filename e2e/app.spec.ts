@@ -83,7 +83,7 @@ test("wrong password and unknown email give the same message", async ({ page }) 
   expect(wrongPassword).toBe(unknownEmail);
 });
 
-test("sign-in ignores an off-site redirect target", async ({ browser, baseURL }) => {
+test("sign-in ignores an off-site redirect target", async ({ browser }) => {
   // Fresh context so we start signed out and actually exercise the sign-in flow.
   const context = await browser.newContext();
   const page = await context.newPage();
