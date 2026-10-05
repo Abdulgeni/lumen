@@ -75,13 +75,13 @@ export const auth = betterAuth({
       "/request-password-reset": { window: 300, max: 3 },
       "/send-verification-email": { window: 300, max: 3 },
       "/delete-user": { window: 300, max: 3 },
+      "/change-password": { window: 300, max: 5 },
     },
   },
 
   advanced: {
-    // Vercel sets x-real-ip itself, so clients cannot spoof it.
     ipAddress: { ipAddressHeaders: ["x-real-ip"] },
   },
 
-  plugins: [nextCookies()], // must be last
+  plugins: [nextCookies()],
 });

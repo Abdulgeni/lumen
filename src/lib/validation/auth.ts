@@ -8,9 +8,20 @@ export const signUpSchema = z.object({
   email,
   password: newPassword,
 });
+
 export const signInSchema = z.object({
   email,
   password: z.string().min(1, "Enter your password").max(128),
 });
+
 export const forgotPasswordSchema = z.object({ email });
 export const resetPasswordSchema = z.object({ password: newPassword });
+
+export const profileSchema = z.object({
+  name: z.string().trim().min(1, "Enter your name").max(80),
+});
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, "Enter your current password").max(128),
+  newPassword: newPassword,
+});

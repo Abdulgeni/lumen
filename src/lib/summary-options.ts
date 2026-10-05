@@ -46,3 +46,20 @@ export const LANGUAGE_CODES = OUTPUT_LANGUAGES.map((l) => l.code) as unknown as 
 export function languageName(code: string): string {
   return OUTPUT_LANGUAGES.find((l) => l.code === code)?.name ?? "English";
 }
+
+export const LENGTH_LABELS: Record<SummaryLength, string> = {
+  SHORT: "Short",
+  MEDIUM: "Medium",
+  LONG: "Long",
+};
+
+export const TONE_LABELS: Record<SummaryTone, string> = {
+  NEUTRAL: "Neutral",
+  PROFESSIONAL: "Professional",
+  CONVERSATIONAL: "Conversational",
+  ACADEMIC: "Academic",
+};
+
+export function toLanguageCode(value: string): LanguageCode {
+  return LANGUAGE_CODES.find((code) => code === value) ?? "en";
+}

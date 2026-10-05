@@ -1,8 +1,9 @@
 import Stripe from "stripe";
+import { PLAN_PRICE_USD } from "../src/lib/billing";
 
 const PLANS = [
-  { lookupKey: "lumen_pro_monthly", name: "Lumen Pro", unitAmount: 1200 },
-  { lookupKey: "lumen_team_monthly", name: "Lumen Team", unitAmount: 3900 },
+  { lookupKey: "lumen_pro_monthly", name: "Lumen Pro", unitAmount: PLAN_PRICE_USD.pro * 100 },
+  { lookupKey: "lumen_team_monthly", name: "Lumen Team", unitAmount: PLAN_PRICE_USD.team * 100 },
 ] as const;
 
 async function main() {

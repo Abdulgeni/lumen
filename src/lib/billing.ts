@@ -3,7 +3,6 @@ import type { PlanId } from "./plans";
 export type PaidPlanId = Exclude<PlanId, "free">;
 export const PAID_PLAN_IDS = ["pro", "team"] as const satisfies readonly PaidPlanId[];
 
-/** Prices are looked up by these keys in Stripe, so no price IDs live in code or config. */
 export const PRICE_LOOKUP_KEYS: Record<PaidPlanId, string> = {
   pro: "lumen_pro_monthly",
   team: "lumen_team_monthly",
@@ -17,7 +16,6 @@ export function paidPlanForLookupKey(key: string | null | undefined): PaidPlanId
   return PAID_PLAN_IDS.find((id) => PRICE_LOOKUP_KEYS[id] === key) ?? null;
 }
 
-/** past_due keeps access while Stripe retries the payment. Everything else does not. */
 const ACCESS_STATUSES = ["active", "trialing", "past_due"];
 
 export function grantsAccess(status: string): boolean {
@@ -26,7 +24,6 @@ export function grantsAccess(status: string): boolean {
 
 const rank = (plan: string) => (plan === "team" ? 2 : plan === "pro" ? 1 : 0);
 
-/** The subscription that decides a user's plan: highest tier, then latest period. */
 export function pickSubscription<
   T extends { plan: string; status: string; currentPeriodEnd: Date },
 >(subscriptions: readonly T[]): T | null {
@@ -37,3 +34,6 @@ export function pickSubscription<
   );
   return eligible[0] ?? null;
 }
+
+/** Displayed prices in USD per month. Stripe charges what its price object says; keep these in step. */
+export const PLAN_PRICE_USD: Record<PaidPlanId, number> = { pro: 12, team: 39 };

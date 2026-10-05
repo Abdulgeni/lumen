@@ -1,4 +1,4 @@
-import { MODE_LABELS, type SourceType, type SummaryMode } from "./summary-options";
+import { MODE_LABELS, type SourceType, SUMMARY_MODES, type SummaryMode } from "./summary-options";
 
 export const PLAN_IDS = ["free", "pro", "team"] as const;
 export type PlanId = (typeof PLAN_IDS)[number];
@@ -9,7 +9,6 @@ export type PlanConfig = {
   name: string;
   monthlySummaries: number;
   maxInputWords: number;
-  /** 0 means file uploads are not available. */
   maxFileBytes: number;
   modes: readonly SummaryMode[];
   sources: readonly SourceType[];
@@ -58,7 +57,6 @@ export function getPlan(id: PlanId): PlanConfig {
 export type EntitlementViolation = {
   code: "SOURCE_NOT_ALLOWED" | "MODE_NOT_ALLOWED" | "INPUT_TOO_LONG" | "FILE_TOO_LARGE";
   message: string;
-  /** The cheapest plan that would allow this request, for upgrade prompts. */
   upgradeTo: PlanId | null;
 };
 
@@ -110,7 +108,24 @@ export function checkEntitlements(
   return null;
 }
 
-/** The next tier up, used for upgrade prompts. */
 export function nextPlan(id: PlanId): PlanId | null {
   return PLAN_IDS[PLAN_IDS.indexOf(id) + 1] ?? null;
+}
+
+/** Human-readable feature list generated from the plan config, so UI copy cannot drift from enforcement. */
+export function planFeatures(plan: PlanConfig): string[] {
+  const modes =
+    plan.modes.length === SUMMARY_MODES.length
+      ? "All three summary modes, including Deep Dive"
+      : plan.modes.map((mode) => MODE_LABELS[mode]).join(" and ");
+  const sources = plan.sources.includes("FILE")
+    ? "Text, web links, and PDF, DOCX, TXT or Markdown uploads"
+    : "Text and web links";
+  return [
+    `${plan.monthlySummaries.toLocaleString("en-US")} summaries per month`,
+    `Up to ${plan.maxInputWords.toLocaleString("en-US")} words per document`,
+    modes,
+    sources,
+    "Full history with search and export",
+  ];
 }
