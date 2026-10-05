@@ -25,6 +25,17 @@ export default async function SignUpPage() {
           <span className="h-px flex-1 bg-border" />
         </div>
         <SignUpForm />
+        <p className="text-center text-xs leading-relaxed text-muted-foreground">
+          By creating an account you agree to our{" "}
+          <Link href="/terms" className="text-primary hover:underline">
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="text-primary hover:underline">
+            Privacy Policy
+          </Link>
+          .
+        </p>
       </CardContent>
       <CardFooter className="justify-center text-sm text-muted-foreground">
         Already have an account?&nbsp;

@@ -22,6 +22,7 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.url(),
+    NEXT_PUBLIC_SUPPORT_EMAIL: z.email(),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
@@ -41,6 +42,7 @@ export const env = createEnv({
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     CRON_SECRET: process.env.CRON_SECRET,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_SUPPORT_EMAIL: process.env.NEXT_PUBLIC_SUPPORT_EMAIL,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,

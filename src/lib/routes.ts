@@ -19,6 +19,8 @@ export const MARKETING_ROUTES = {
   faq: "/faq",
 } as const;
 
+export const LEGAL_ROUTES = { privacy: "/privacy", terms: "/terms" } as const;
+
 export const AUTH_ROUTES = { signIn: "/sign-in", signUp: "/sign-up" } as const;
 
 export const MARKETING_NAV = [

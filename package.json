@@ -2,6 +2,7 @@
   "name": "lumen",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
@@ -23,7 +24,10 @@
     "extract:check": "tsx --env-file=.env.local scripts/extract-check.ts",
     "ratelimit:check": "tsx --env-file=.env.local scripts/ratelimit-check.ts",
     "stripe:setup": "tsx --env-file=.env.local scripts/stripe-setup.ts",
-    "seed:demo": "tsx --env-file=.env.local scripts/seed-demo.ts"
+    "seed:demo": "tsx --env-file=.env.local scripts/seed-demo.ts",
+    "launch:check": "tsx scripts/launch-check.ts",
+    "e2e": "playwright test",
+    "e2e:install": "playwright install chromium"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -50,7 +54,6 @@
     "remark-gfm": "^4.0.1",
     "resend": "^6.32.0",
     "server-only": "^0.0.1",
-    "shadcn": "^4.21.1",
     "sonner": "^2.0.8",
     "stripe": "^23.0.0",
     "three": "^0.186.1",
@@ -59,6 +62,8 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22.20.5",
     "@types/react": "^19",
@@ -70,6 +75,7 @@
     "prettier": "^3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "prisma": "^7.10.0",
+    "shadcn": "^4.21.2",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
     "typescript": "^5",

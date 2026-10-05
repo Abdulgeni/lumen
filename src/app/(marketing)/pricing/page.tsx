@@ -23,7 +23,10 @@ export default function PricingPage() {
         <p className="mt-10 text-center text-xs leading-relaxed text-muted-foreground">
           Prices are in US dollars, billed monthly through Stripe. You can cancel at any time and
           keep your plan until the end of the billing period. See the{" "}
-          <Link href={MARKETING_ROUTES.faq} className="text-gold hover:text-gold-light">
+          <Link
+            href={MARKETING_ROUTES.faq}
+            className="text-gold underline underline-offset-2 hover:text-gold-light"
+          >
             FAQ
           </Link>{" "}
           for more.

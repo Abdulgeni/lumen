@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { APP_NAME, AUTH_ROUTES, MARKETING_NAV, MARKETING_ROUTES } from "@/lib/routes";
+import { APP_NAME, AUTH_ROUTES, LEGAL_ROUTES, MARKETING_NAV, MARKETING_ROUTES } from "@/lib/routes";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -48,8 +48,18 @@ export function Footer() {
           </ul>
         </nav>
       </div>
-      <div className="border-t border-border px-6 py-5 text-center text-xs text-muted-foreground">
-        © {year} {APP_NAME}. All rights reserved.
+      <div className="flex flex-col items-center justify-between gap-3 border-t border-border px-6 py-5 text-xs text-muted-foreground sm:flex-row sm:px-8">
+        <span>
+          © {year} {APP_NAME}. All rights reserved.
+        </span>
+        <span className="flex gap-4">
+          <Link href={LEGAL_ROUTES.privacy} className="transition-colors hover:text-gold-light">
+            Privacy
+          </Link>
+          <Link href={LEGAL_ROUTES.terms} className="transition-colors hover:text-gold-light">
+            Terms
+          </Link>
+        </span>
       </div>
     </footer>
   );

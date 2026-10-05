@@ -44,17 +44,20 @@ export default function HowItWorksPage() {
       </PageHero>
 
       <section className="mx-auto max-w-6xl px-6 pb-20 sm:px-8">
-        <ol className="grid gap-6 md:grid-cols-3">
+        <ol className="grid gap-6 md:grid-cols-3" role="list">
           {STEPS.map(({ icon: Icon, title, body }, index) => (
             <Reveal key={title} delay={index * 120}>
-              <li className="relative h-full list-none rounded-3xl border border-border bg-card/70 p-8 backdrop-blur-xl">
-                <span className="absolute top-6 right-7 font-display text-5xl text-gold/20">
+              <li
+                role="listitem"
+                className="relative h-full list-none rounded-3xl border border-border bg-card/70 p-8 backdrop-blur-xl"
+              >
+                <span className="font-display absolute top-6 right-7 text-5xl text-gold/20">
                   {index + 1}
                 </span>
                 <span className="mb-5 flex size-11 items-center justify-center rounded-xl border border-gold/30 bg-secondary text-gold">
                   <Icon className="size-5" />
                 </span>
-                <h2 className="mb-2 font-display text-2xl font-semibold">{title}</h2>
+                <h2 className="font-display mb-2 text-2xl font-semibold">{title}</h2>
                 <p className="text-sm leading-relaxed text-muted-foreground">{body}</p>
               </li>
             </Reveal>
@@ -64,7 +67,7 @@ export default function HowItWorksPage() {
 
       <section aria-labelledby="data" className="mx-auto max-w-3xl px-6 pb-8 sm:px-8">
         <Reveal className="gold-gradient-border rounded-3xl bg-card/60 p-8 backdrop-blur-xl sm:p-10">
-          <h2 id="data" className="mb-5 font-display text-2xl font-semibold sm:text-3xl">
+          <h2 id="data" className="font-display mb-5 text-2xl font-semibold sm:text-3xl">
             What happens to your data
           </h2>
           <ul className="space-y-3">

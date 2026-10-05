@@ -7,9 +7,13 @@ const PLANS = [
 ] as const;
 
 async function main() {
+  const live = process.argv.includes("--live");
   const key = process.env.STRIPE_SECRET_KEY;
-  if (!key?.startsWith("sk_test_")) {
-    throw new Error("Refusing to run: STRIPE_SECRET_KEY must be a test-mode key (sk_test_...).");
+  const allowed = key?.startsWith("sk_test_") || (live && key?.startsWith("sk_live_"));
+  if (!key || !allowed) {
+    throw new Error(
+      "Refusing to run: use a test key, or a live key together with the --live flag.",
+    );
   }
   const stripe = new Stripe(key);
 
