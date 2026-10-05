@@ -43,7 +43,6 @@ export function UserMenu({ name, email, planName }: Props) {
     <div ref={container} className="relative">
       <button
         type="button"
-        aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-2.5 rounded-full p-1 transition-colors hover:bg-secondary"
@@ -58,27 +57,24 @@ export function UserMenu({ name, email, planName }: Props) {
       </button>
 
       {open ? (
-        <div
-          role="menu"
-          className="absolute right-0 z-40 mt-2 w-60 rounded-2xl border border-border bg-popover p-2 shadow-2xl"
-        >
+        <div className="absolute right-0 z-40 mt-2 w-60 rounded-2xl border border-border bg-popover p-2 shadow-2xl">
           <div className="border-b border-border px-3 pt-1 pb-3">
             <p className="truncate text-sm font-semibold">{name}</p>
             <p className="truncate text-xs text-muted-foreground">{email}</p>
           </div>
           <div className="space-y-0.5 pt-2" onClick={() => setOpen(false)}>
-            <Link role="menuitem" href={ROUTES.archive} className={item}>
+            <Link href={ROUTES.archive} className={item}>
               <FileText className="size-4 text-gold" /> Archive
             </Link>
-            <Link role="menuitem" href={ROUTES.billing} className={item}>
+            <Link href={ROUTES.billing} className={item}>
               <CreditCard className="size-4 text-gold-light" /> Plan &amp; Billing
             </Link>
-            <Link role="menuitem" href={ROUTES.settings} className={item}>
+            <Link href={ROUTES.settings} className={item}>
               <Settings className="size-4" /> Settings
             </Link>
           </div>
           <div className="mt-1 border-t border-border pt-1">
-            <button type="button" role="menuitem" onClick={signOut} className={item}>
+            <button type="button" onClick={signOut} className={item}>
               <LogOut className="size-4" /> Sign out
             </button>
           </div>

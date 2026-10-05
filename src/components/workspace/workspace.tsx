@@ -291,6 +291,15 @@ export function Workspace({ plan, usage, defaults }: WorkspaceProps) {
 
   return (
     <div className="space-y-6">
+      <p role="status" aria-live="polite" className="sr-only">
+        {phase === "running"
+          ? "Generating your summary."
+          : phase === "done"
+            ? "Your summary is ready."
+            : phase === "failed"
+              ? (error ?? "")
+              : ""}
+      </p>
       <header className="flex flex-col justify-between gap-3 border-b border-border pb-6 sm:flex-row sm:items-end">
         <div>
           <h1 className="font-display text-4xl font-light tracking-tight">New Distillation</h1>

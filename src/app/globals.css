@@ -433,3 +433,21 @@
     transition: none;
   }
 }
+/* Visible keyboard focus everywhere; components with their own ring styles override this. */
+@layer base {
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Gradient text is invisible in forced-colors mode; fall back to the system text color. */
+@media (forced-colors: active) {
+  .gold-shimmer {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+  }
+}

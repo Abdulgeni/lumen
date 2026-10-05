@@ -18,6 +18,7 @@ export const env = createEnv({
     UPSTASH_REDIS_REST_TOKEN: z.string().min(10),
     STRIPE_SECRET_KEY: z.string().startsWith("sk_"),
     STRIPE_WEBHOOK_SECRET: z.string().startsWith("whsec_"),
+    CRON_SECRET: z.string().min(32),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.url(),
@@ -38,6 +39,7 @@ export const env = createEnv({
     UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    CRON_SECRET: process.env.CRON_SECRET,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

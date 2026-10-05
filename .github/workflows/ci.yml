@@ -1,0 +1,46 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      DATABASE_URL: postgresql://user:pass@localhost:5432/ci
+      BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci-secret
+      RESEND_API_KEY: re_ci_placeholder
+      EMAIL_FROM: Lumen <ci@example.com>
+      GOOGLE_CLIENT_ID: ci-client-id
+      GOOGLE_CLIENT_SECRET: ci-client-secret
+      GEMINI_API_KEY: ci-placeholder-ci-placeholder
+      UPSTASH_REDIS_REST_URL: https://ci.example.upstash.io
+      UPSTASH_REDIS_REST_TOKEN: ci-placeholder-token
+      STRIPE_SECRET_KEY: sk_test_ci_placeholder
+      STRIPE_WEBHOOK_SECRET: whsec_ci_placeholder
+      CRON_SECRET: ci-cron-secret-ci-cron-secret-ci-cron
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  audit:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm audit --omit=dev --audit-level=high

@@ -7,8 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-// ───────────── Enums ─────────────
-
 enum SummarySource {
   TEXT
   URL
@@ -43,8 +41,6 @@ enum SummaryStatus {
 enum UsageKind {
   SUMMARY
 }
-
-// ───────────── Auth (Better Auth core) ─────────────
 
 model User {
   id            String    @id
@@ -122,8 +118,6 @@ model RateLimit {
   @@map("rate_limit")
 }
 
-// ───────────── Product ─────────────
-
 model Summary {
   id             String        @id @default(cuid())
   userId         String
@@ -133,9 +127,7 @@ model Summary {
   sourceType     SummarySource
   sourceUrl      String?
   sourceName     String?
-  /// First ~500 characters of the input only. Full source text is never stored.
   sourceExcerpt  String?
-  /// Plain-text snippet (~240 chars) for history lists, so lists never load full results.
   preview        String?
 
   mode           SummaryMode
@@ -152,6 +144,8 @@ model Summary {
   outputTokens   Int?
   inputWords     Int           @default(0)
   outputWords    Int           @default(0)
+  /// The usage period this summary's credit was charged to, so a stale run can be refunded exactly.
+  usagePeriodStart DateTime?
 
   isFavorite     Boolean       @default(false)
   createdAt      DateTime      @default(now())
@@ -189,8 +183,6 @@ model UserPreference {
 
   @@map("user_preference")
 }
-
-// ───────────── Billing (Stripe) ─────────────
 
 model BillingCustomer {
   userId           String   @id

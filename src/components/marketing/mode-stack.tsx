@@ -2,7 +2,7 @@
 
 import { CheckCircle2, Compass, FileText, Layers, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { type PointerEvent, useRef, useState } from "react";
+import { type KeyboardEvent, type PointerEvent, useRef, useState } from "react";
 import { AUTH_ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -116,6 +116,21 @@ export function ModeStack() {
     drag.current = null;
   };
 
+  function onTabKey(event: KeyboardEvent<HTMLButtonElement>) {
+    const order = TABS.map((tab) => tab.id);
+    const index = order.indexOf(active);
+    const next =
+      event.key === "ArrowRight"
+        ? order[(index + 1) % order.length]
+        : event.key === "ArrowLeft"
+          ? order[(index - 1 + order.length) % order.length]
+          : undefined;
+    if (!next) return;
+    event.preventDefault();
+    setActive(next);
+    document.getElementById(`tab-${next}`)?.focus();
+  }
+
   const current = TABS.find((tab) => tab.id === active) ?? TABS[0];
 
   return (
@@ -133,6 +148,8 @@ export function ModeStack() {
             id={`tab-${id}`}
             aria-selected={active === id}
             aria-controls="mode-panel"
+            tabIndex={active === id ? 0 : -1}
+            onKeyDown={onTabKey}
             onClick={() => setActive(id)}
             className={cn(
               "flex items-center gap-2.5 rounded-full border px-5 py-2.5 text-xs font-semibold tracking-wide transition-all duration-300",

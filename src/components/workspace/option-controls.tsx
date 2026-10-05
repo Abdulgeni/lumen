@@ -24,7 +24,7 @@ export function SegmentedControl<T extends string>({
         {label}
       </p>
       <div
-        role="radiogroup"
+        role="group"
         aria-label={label}
         className="grid auto-cols-fr grid-flow-col gap-1.5 rounded-xl border border-border bg-secondary/40 p-1"
       >
@@ -34,8 +34,7 @@ export function SegmentedControl<T extends string>({
             <button
               key={option.value}
               type="button"
-              role="radio"
-              aria-checked={selected}
+              aria-pressed={selected}
               onClick={() => (option.locked ? onLocked?.(option.value) : onChange(option.value))}
               className={cn(
                 "flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all",

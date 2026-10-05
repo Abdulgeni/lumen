@@ -152,6 +152,7 @@ export function createSummaryService(deps: ServiceDeps, overrides: Partial<Servi
           status: "PENDING",
           inputChars: source.inputChars,
           inputWords: source.inputWords,
+          usagePeriodStart: period.start,
         },
         select: { id: true },
       });
