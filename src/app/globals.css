@@ -287,3 +287,127 @@
     scroll-behavior: auto !important;
   }
 }
+/* Rendered summaries */
+@layer components {
+  .markdown {
+    font-size: 0.9375rem;
+    line-height: 1.8;
+    color: color-mix(in oklab, var(--foreground) 92%, transparent);
+  }
+  .markdown > :first-child {
+    margin-top: 0;
+  }
+  .markdown h1,
+  .markdown h2,
+  .markdown h3 {
+    @apply font-display;
+    color: var(--foreground);
+    line-height: 1.25;
+  }
+  .markdown h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 2rem 0 0.75rem;
+  }
+  .markdown h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 1.75rem 0 0.6rem;
+  }
+  .markdown h3 {
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin: 1.25rem 0 0.5rem;
+    color: var(--accent-foreground);
+  }
+  .markdown p {
+    margin: 0.85rem 0;
+  }
+  .markdown ul,
+  .markdown ol {
+    margin: 0.85rem 0;
+    padding-left: 1.4rem;
+  }
+  .markdown ul {
+    list-style: disc;
+  }
+  .markdown ol {
+    list-style: decimal;
+  }
+  .markdown li {
+    margin: 0.35rem 0;
+  }
+  .markdown li::marker {
+    color: var(--primary);
+  }
+  .markdown strong {
+    color: var(--foreground);
+    font-weight: 600;
+  }
+  .markdown a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .markdown a:hover {
+    color: var(--accent-foreground);
+  }
+  .markdown blockquote {
+    border-left: 2px solid var(--primary);
+    padding: 0.4rem 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+    color: var(--accent-foreground);
+    background: color-mix(in oklab, var(--primary) 6%, transparent);
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+  .markdown code {
+    @apply font-mono;
+    font-size: 0.85em;
+    padding: 0.15rem 0.35rem;
+    border-radius: 0.375rem;
+    background: var(--secondary);
+  }
+  .markdown pre {
+    overflow-x: auto;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0.75rem;
+    background: var(--secondary);
+    border: 1px solid var(--border);
+  }
+  .markdown pre code {
+    padding: 0;
+    background: none;
+  }
+  .markdown hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+  }
+  .markdown table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.875rem;
+  }
+  .markdown th,
+  .markdown td {
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+  }
+  .markdown th {
+    background: var(--secondary);
+    font-weight: 600;
+  }
+}
+
+/* Toasts follow the theme */
+[data-sonner-toaster] {
+  --normal-bg: var(--card);
+  --normal-text: var(--card-foreground);
+  --normal-border: var(--border);
+}

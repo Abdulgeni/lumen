@@ -3,7 +3,7 @@ import { escapeLike } from "../lib/text";
 import type { ListQuery } from "../lib/validation/summary";
 import { db } from "./db";
 
-const listSelect = {
+export const listSelect = {
   id: true,
   title: true,
   preview: true,
@@ -16,6 +16,8 @@ const listSelect = {
   outputLanguage: true,
   isFavorite: true,
   aiModel: true,
+  inputWords: true,
+  outputWords: true,
   createdAt: true,
 } satisfies Prisma.SummarySelect;
 
@@ -25,7 +27,6 @@ const detailSelect = {
   updatedAt: true,
 } satisfies Prisma.SummarySelect;
 
-/** Every query below is scoped by userId, so one user can never reach another's data. */
 export async function listSummaries(userId: string, query: ListQuery) {
   const where: Prisma.SummaryWhereInput = {
     userId,
@@ -86,3 +87,5 @@ export async function deleteSummary(userId: string, id: string): Promise<boolean
   const { count } = await db.summary.deleteMany({ where: { id, userId } });
   return count > 0;
 }
+
+export type SummaryListItem = Prisma.SummaryGetPayload<{ select: typeof listSelect }>;

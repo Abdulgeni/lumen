@@ -150,6 +150,8 @@ model Summary {
   inputChars     Int           @default(0)
   inputTokens    Int?
   outputTokens   Int?
+  inputWords     Int           @default(0)
+  outputWords    Int           @default(0)
 
   isFavorite     Boolean       @default(false)
   createdAt      DateTime      @default(now())
@@ -162,8 +164,6 @@ model Summary {
   @@map("summary")
 }
 
-/// One row per user, usage kind, and billing period. Quota is claimed with an atomic
-/// conditional increment (built in Loop 4), never with a read-then-write.
 model UsageCounter {
   id          String    @id @default(cuid())
   userId      String
@@ -202,14 +202,11 @@ model BillingCustomer {
 }
 
 model Subscription {
-  /// The Stripe subscription id (sub_...).
   id                 String    @id
   userId             String
   user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   stripeCustomerId   String
-  /// "pro" or "team", derived from the price's lookup key.
   plan               String
-  /// Stripe's status, stored verbatim (active, trialing, past_due, canceled, unpaid, ...).
   status             String
   currentPeriodStart DateTime
   currentPeriodEnd   DateTime
@@ -223,7 +220,6 @@ model Subscription {
   @@map("subscription")
 }
 
-/// One row per webhook event we have handled; the primary key makes handling idempotent.
 model StripeEvent {
   id          String   @id
   type        String

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "summary" ADD COLUMN     "inputWords" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "outputWords" INTEGER NOT NULL DEFAULT 0;

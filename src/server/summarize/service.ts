@@ -1,6 +1,7 @@
 import { checkEntitlements, type ModelTier, nextPlan } from "@/lib/plans";
 import type { SummaryOptions } from "@/lib/validation/summary";
 import { fallbackTitle, makePreview } from "@/lib/text";
+import { countWords } from "@/lib/words";
 import { buildSummaryPrompt, splitTitle } from "../ai/prompt";
 import { type Attachment, GenerationError, type StreamEvent } from "../ai/stream";
 import { ApiFailure } from "../api/failure";
@@ -54,10 +55,6 @@ function logDbFailure(error: unknown) {
 export function createSummaryService(deps: ServiceDeps, overrides: Partial<ServiceConfig> = {}) {
   const config = { ...DEFAULT_CONFIG, ...overrides };
 
-  /**
-   * Validates, meters and records a request, then returns the event stream.
-   * Anything that goes wrong before generation starts throws an ApiFailure.
-   */
   async function start(input: {
     userId: string;
     options: SummaryOptions;
@@ -67,7 +64,6 @@ export function createSummaryService(deps: ServiceDeps, overrides: Partial<Servi
     const { userId, options, source: sourceInput } = input;
     const { plan, planId, period } = await deps.getEntitlement(userId);
 
-    // 1. Cheap checks first: nothing below costs money or network until these pass.
     const fileBytes =
       sourceInput.sourceType === "FILE" ? sourceInput.file.bytes.byteLength : undefined;
     const early = checkEntitlements(planId, {
@@ -104,10 +100,8 @@ export function createSummaryService(deps: ServiceDeps, overrides: Partial<Servi
       );
     }
 
-    // 2. Fetch or extract the source.
     const source = await deps.prepareSource(sourceInput);
 
-    // 3. Size checks need the real word count. PDFs are bounded by file size instead.
     if (source.attachments.length === 0) {
       if (source.inputWords < config.minWords) {
         throw new ApiFailure(
@@ -124,7 +118,6 @@ export function createSummaryService(deps: ServiceDeps, overrides: Partial<Servi
       if (late) throw new ApiFailure(402, late.code, late.message, { upgradeTo: late.upgradeTo });
     }
 
-    // 4. Atomically claim one unit of quota.
     const reserved = await reserveUsage({ userId, limit: plan.monthlySummaries, period });
     if (!reserved.ok) {
       throw new ApiFailure(
@@ -141,7 +134,6 @@ export function createSummaryService(deps: ServiceDeps, overrides: Partial<Servi
     }
     const { reservation } = reserved;
 
-    // 5. Record the attempt.
     const fallback = fallbackTitle(source.titleHint, source.text);
     let row: { id: string };
     try {
@@ -159,6 +151,7 @@ export function createSummaryService(deps: ServiceDeps, overrides: Partial<Servi
           outputLanguage: options.language,
           status: "PENDING",
           inputChars: source.inputChars,
+          inputWords: source.inputWords,
         },
         select: { id: true },
       });
@@ -222,6 +215,7 @@ export function createSummaryService(deps: ServiceDeps, overrides: Partial<Servi
             aiModel: finish.model,
             inputTokens: finish.inputTokens,
             outputTokens: finish.outputTokens,
+            outputWords: countWords(body),
           },
         });
         settled = true;
@@ -231,7 +225,6 @@ export function createSummaryService(deps: ServiceDeps, overrides: Partial<Servi
         await fail(code);
         yield { type: "error", code, message: userMessage(code) };
       } finally {
-        // The consumer stopped reading (browser closed): treat it as a cancellation.
         if (!settled) await fail("ABORTED");
       }
     }

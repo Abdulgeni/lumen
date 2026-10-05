@@ -83,6 +83,8 @@ describe("summary service", () => {
       inputTokens: 100,
       outputTokens: 20,
     });
+    expect(row.inputWords).toBe(60);
+    expect(row.outputWords).toBeGreaterThan(0);
     expect(row.resultMarkdown).toBe("## Bottom line\nRevenue grew.");
     expect(row.preview).toBe("Bottom line Revenue grew.");
     expect(await used()).toBe(1);

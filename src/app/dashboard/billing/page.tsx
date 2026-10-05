@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { BillingActions } from "@/components/billing/billing-actions";
 import { RefreshWhilePending } from "@/components/billing/refresh-while-pending";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,11 +28,8 @@ export default async function BillingPage({
   const { used } = await getUsage(user.id, period);
 
   return (
-    <main className="mx-auto max-w-2xl space-y-6 px-6 py-16">
+    <div className="mx-auto max-w-2xl space-y-6">
       <RefreshWhilePending active={status === "success" && planId === "free"} />
-      <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground">
-        ← Dashboard
-      </Link>
       <h1 className="font-display text-4xl font-light">Billing and usage</h1>
 
       {status === "success" ? (
@@ -74,6 +70,6 @@ export default async function BillingPage({
           <BillingActions isPaid={planId !== "free"} />
         </CardContent>
       </Card>
-    </main>
+    </div>
   );
 }

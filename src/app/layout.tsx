@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Toaster } from "sonner";
 import { env } from "@/env";
 import "./globals.css";
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-dvh selection:bg-primary/25 selection:text-primary">
         <div className="grain-overlay" aria-hidden="true" />
         {children}
+        <Toaster theme="dark" position="bottom-right" />
       </body>
     </html>
   );
