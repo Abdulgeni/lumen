@@ -50,3 +50,7 @@ _legacy/
 
 .vercel
 .env*
+
+# Prisma agent skills (auto-generated)
+.agents/
+skills-lock.json

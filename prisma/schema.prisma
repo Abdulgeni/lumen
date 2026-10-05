@@ -55,11 +55,13 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  sessions      Session[]
-  accounts      Account[]
-  summaries     Summary[]
-  usageCounters UsageCounter[]
-  preference    UserPreference?
+  sessions        Session[]
+  accounts        Account[]
+  summaries       Summary[]
+  usageCounters   UsageCounter[]
+  preference      UserPreference?
+  billingCustomer BillingCustomer?
+  subscriptions   Subscription[]
 
   @@map("user")
 }
@@ -186,4 +188,47 @@ model UserPreference {
   updatedAt      DateTime      @updatedAt
 
   @@map("user_preference")
+}
+
+// ───────────── Billing (Stripe) ─────────────
+
+model BillingCustomer {
+  userId           String   @id
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stripeCustomerId String   @unique
+  createdAt        DateTime @default(now())
+
+  @@map("billing_customer")
+}
+
+model Subscription {
+  /// The Stripe subscription id (sub_...).
+  id                 String    @id
+  userId             String
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stripeCustomerId   String
+  /// "pro" or "team", derived from the price's lookup key.
+  plan               String
+  /// Stripe's status, stored verbatim (active, trialing, past_due, canceled, unpaid, ...).
+  status             String
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean   @default(false)
+  canceledAt         DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([userId, status])
+  @@index([stripeCustomerId])
+  @@map("subscription")
+}
+
+/// One row per webhook event we have handled; the primary key makes handling idempotent.
+model StripeEvent {
+  id          String   @id
+  type        String
+  processedAt DateTime @default(now())
+
+  @@index([processedAt])
+  @@map("stripe_event")
 }

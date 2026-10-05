@@ -7,6 +7,7 @@ type Window = Parameters<typeof Ratelimit.slidingWindow>[1];
 const POLICIES = {
   summarizePerMinute: { requests: 6, window: "1 m" },
   summarizePerHour: { requests: 60, window: "1 h" },
+  billingPerMinute: { requests: 10, window: "1 m" },
 } as const satisfies Record<string, { requests: number; window: Window }>;
 
 export type RateLimitPolicy = keyof typeof POLICIES;

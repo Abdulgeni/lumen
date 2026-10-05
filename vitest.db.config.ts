@@ -8,6 +8,7 @@ export default defineConfig({
     include: ["src/**/*.db.test.ts"],
     setupFiles: ["./vitest.db.setup.ts"],
     testTimeout: 30_000,
+    hookTimeout: 30_000,
     fileParallelism: false,
   },
 });

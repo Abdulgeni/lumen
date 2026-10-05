@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { requireSession } from "@/server/session";
 
@@ -12,6 +13,11 @@ export default async function DashboardPage() {
       <p className="text-sm text-muted-foreground">Signed in as</p>
       <h1 className="font-display text-5xl font-light">{user.name}</h1>
       <p className="text-muted-foreground">{user.email}</p>
+      <p>
+        <Link href="/dashboard/billing" className="text-primary hover:underline">
+          Billing and usage
+        </Link>
+      </p>
       <div>
         <SignOutButton />
       </div>

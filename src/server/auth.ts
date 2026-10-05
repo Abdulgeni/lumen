@@ -2,6 +2,7 @@ import { prismaAdapter } from "@better-auth/prisma-adapter";
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { env } from "../env";
+import { removeStripeCustomer } from "./billing/cleanup";
 import { db } from "./db";
 import {
   sendAccountDeletionEmail,
@@ -58,7 +59,9 @@ export const auth = betterAuth({
       sendDeleteAccountVerification: async ({ user, url }) => {
         sendAccountDeletionEmail({ to: user.email, url });
       },
-      // Loop 6 adds a beforeDelete hook that cancels any Stripe subscription first.
+      beforeDelete: async (user) => {
+        await removeStripeCustomer(user.id);
+      },
     },
   },
 
