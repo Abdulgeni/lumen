@@ -43,7 +43,9 @@ export function UserMenu({ name, email, planName }: Props) {
     <div ref={container} className="relative">
       <button
         type="button"
+        aria-label={`Account menu for ${name}`}
         aria-expanded={open}
+        aria-haspopup="true"
         onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-2.5 rounded-full p-1 transition-colors hover:bg-secondary"
       >
