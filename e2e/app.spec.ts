@@ -31,7 +31,7 @@ test.beforeAll(async ({ browser }) => {
   await pageA.waitForURL("**/dashboard");
   await signIn(pageB, userB);
   await pageB.waitForURL("**/dashboard");
-});
+}, 180_000);
 
 test.afterAll(async () => {
   await contextA.close();

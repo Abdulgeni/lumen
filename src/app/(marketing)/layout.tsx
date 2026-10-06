@@ -1,12 +1,7 @@
-import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Ambient } from "@/components/marketing/ambient";
 import { Footer } from "@/components/marketing/footer";
 import { Navbar } from "@/components/marketing/navbar";
-
-export const metadata: Metadata = {
-  openGraph: { type: "website", siteName: "Lumen" },
-};
 
 export default function MarketingLayout({ children }: { children: ReactNode }) {
   return (

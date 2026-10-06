@@ -20,7 +20,18 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: { default: "Lumen", template: "%s | Lumen" },
-  description: "Lumen is an AI content summarizer.",
+  description: "Lumen turns long articles, reports, and documents into clear AI summaries.",
+  openGraph: {
+    type: "website",
+    siteName: "Lumen",
+    title: "Lumen: every long read, distilled",
+    description: "Turn articles, reports, and documents into clear briefs in seconds.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Lumen: every long read, distilled",
+    description: "Turn articles, reports, and documents into clear briefs in seconds.",
+  },
 };
 
 export const viewport: Viewport = {
