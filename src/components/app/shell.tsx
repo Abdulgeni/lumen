@@ -1,13 +1,13 @@
 "use client";
 
 import {
-  ChevronLeft,
   ChevronRight,
   CirclePlus,
   CreditCard,
   FileText,
   LayoutDashboard,
   Menu,
+  Pin,
   Search,
   Settings,
   Sparkles,
@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
@@ -31,6 +31,10 @@ const NAV = [
   { label: "Plan & Billing", href: ROUTES.billing, icon: CreditCard, exact: false },
   { label: "Settings", href: ROUTES.settings, icon: Settings, exact: false },
 ] as const;
+
+/** Widths in pixels. Collapsed keeps icons visible; expanded reveals the labels. */
+const WIDTH_COLLAPSED = 72;
+const WIDTH_EXPANDED = 256;
 
 function crumb(pathname: string): string {
   if (pathname.startsWith(ROUTES.newSummary)) return "New Distillation";
@@ -48,10 +52,10 @@ type ShellProps = {
   children: ReactNode;
 };
 
-function NavLinks({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
+function NavLinks({ expanded, onNavigate }: { expanded: boolean; onNavigate?: () => void }) {
   const pathname = usePathname();
   return (
-    <nav className="space-y-1.5 p-3" aria-label="Main">
+    <nav className="space-y-1.5 px-3 py-3" aria-label="Main">
       {NAV.map(({ label, href, icon: Icon, exact }) => {
         const active = exact ? pathname === href : pathname.startsWith(href);
         return (
@@ -59,10 +63,12 @@ function NavLinks({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: 
             key={href}
             href={href}
             onClick={onNavigate}
-            title={collapsed ? label : undefined}
+            title={expanded ? undefined : label}
             aria-current={active ? "page" : undefined}
+            aria-label={expanded ? undefined : label}
             className={cn(
-              "group flex items-center gap-3 rounded-xl border px-3.5 py-2.5 text-sm font-medium transition-all duration-200",
+              "group flex items-center rounded-xl border text-sm font-medium transition-colors duration-200",
+              expanded ? "gap-3 px-3.5 py-2.5" : "h-11 justify-center",
               active
                 ? "border-gold/30 bg-secondary text-gold-light shadow-[0_0_15px_rgba(200,169,106,0.1)]"
                 : "border-transparent text-muted-foreground hover:bg-secondary/50 hover:text-foreground",
@@ -74,7 +80,7 @@ function NavLinks({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: 
                 active ? "text-gold" : "group-hover:text-foreground",
               )}
             />
-            {collapsed ? <span className="sr-only">{label}</span> : <span>{label}</span>}
+            {expanded ? <span className="truncate">{label}</span> : null}
           </Link>
         );
       })}
@@ -113,65 +119,112 @@ function UsageWidget({ plan, usage }: Pick<ShellProps, "plan" | "usage">) {
 
 export function AppShell({ user, plan, usage, children }: ShellProps) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [hovering, setHovering] = useState(false);
+  const [pinned, setPinned] = useState(false);
+  const leaveTimer = useRef<number | null>(null);
+
+  // The sidebar expands when hovered or pinned. Everything else follows from this.
+  const expanded = hovering || pinned;
+
+  // Grace period so a brief pointer exit does not collapse the sidebar.
+  function onEnter() {
+    if (leaveTimer.current !== null) {
+      window.clearTimeout(leaveTimer.current);
+      leaveTimer.current = null;
+    }
+    setHovering(true);
+  }
+
+  function onLeave() {
+    if (leaveTimer.current !== null) window.clearTimeout(leaveTimer.current);
+    leaveTimer.current = window.setTimeout(() => {
+      setHovering(false);
+      leaveTimer.current = null;
+    }, 200);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (leaveTimer.current !== null) window.clearTimeout(leaveTimer.current);
+    };
+  }, []);
+
+  const sidebarWidth = expanded ? WIDTH_EXPANDED : WIDTH_COLLAPSED;
 
   return (
     <div className="flex min-h-dvh bg-background text-foreground">
       <aside
-        className={cn(
-          "sticky top-0 z-20 hidden h-dvh flex-col justify-between border-r border-border bg-background transition-all duration-300 lg:flex",
-          collapsed ? "w-20" : "w-64",
-        )}
+        onMouseEnter={onEnter}
+        onMouseLeave={onLeave}
+        style={{ width: sidebarWidth }}
+        aria-label="Primary"
+        className="fixed top-0 left-0 z-40 hidden h-dvh flex-col justify-between overflow-hidden border-r border-border bg-background shadow-[2px_0_12px_rgba(0,0,0,0.35)] transition-[width] duration-300 ease-out lg:flex"
       >
         <div>
-          <div className="flex h-16 items-center justify-between border-b border-border px-5">
+          {/* Header: logo mark always visible; wordmark and pin only when expanded. */}
+          <div className="flex h-16 items-center justify-between border-b border-border px-4">
             <Link
               href={ROUTES.dashboard}
-              className="flex items-center gap-2.5"
+              className="flex min-w-0 items-center gap-2.5"
               aria-label={`${APP_NAME} overview`}
             >
-              <span className="flex size-8 items-center justify-center rounded-xl border border-gold/40 bg-secondary shadow-[0_0_12px_rgba(200,169,106,0.15)]">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-xl border border-gold/40 bg-secondary shadow-[0_0_12px_rgba(200,169,106,0.15)]">
                 <span className="font-display text-base font-semibold text-gold-light">L</span>
               </span>
-              {collapsed ? null : (
-                <span className="font-display text-xl font-semibold tracking-tight">
-                  {APP_NAME}
-                </span>
-              )}
+              <span
+                className={cn(
+                  "truncate font-display text-xl font-semibold tracking-tight transition-opacity duration-200",
+                  expanded ? "opacity-100" : "pointer-events-none opacity-0",
+                )}
+              >
+                {APP_NAME}
+              </span>
             </Link>
-            <button
-              type="button"
-              onClick={() => setCollapsed((v) => !v)}
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              className="rounded-lg p-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-            >
-              {collapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
-            </button>
+            {expanded ? (
+              <button
+                type="button"
+                onClick={() => setPinned((v) => !v)}
+                aria-label={pinned ? "Unpin sidebar" : "Pin sidebar open"}
+                aria-pressed={pinned}
+                className={cn(
+                  "shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
+                  pinned && "bg-secondary text-gold-light",
+                )}
+              >
+                <Pin className={cn("size-3.5", pinned && "fill-current")} />
+              </button>
+            ) : null}
           </div>
-          <NavLinks collapsed={collapsed} />
+
+          <NavLinks expanded={expanded} />
         </div>
+
+        {/* Footer: compact icon when collapsed, full usage widget when expanded. */}
         <div className="border-t border-border p-3">
-          {collapsed ? (
-            <div className="flex justify-center" title={`${usage.used}/${usage.limit} used`}>
-              <span className="flex size-9 items-center justify-center rounded-xl border border-gold/30 bg-secondary text-gold">
+          {expanded ? (
+            <UsageWidget plan={plan} usage={usage} />
+          ) : (
+            <div className="flex justify-center">
+              <span
+                title={`${usage.used}/${usage.limit} used`}
+                className="flex size-9 items-center justify-center rounded-xl border border-gold/30 bg-secondary text-gold"
+              >
                 <Zap className="size-4" />
               </span>
             </div>
-          ) : (
-            <UsageWidget plan={plan} usage={usage} />
           )}
         </div>
       </aside>
 
-      <Modal open={drawerOpen} onClose={() => setDrawerOpen(false)} title={APP_NAME} side="left">
-        <NavLinks collapsed={false} onNavigate={() => setDrawerOpen(false)} />
-        <div className="mt-4">
-          <UsageWidget plan={plan} usage={usage} />
-        </div>
-      </Modal>
-
-      <div className="flex min-w-0 flex-1 flex-col">
+      {/* Main column: always leaves room for the collapsed width;
+          when pinned, the padding grows to match the expanded width. */}
+      <div
+        className={cn(
+          "flex min-w-0 flex-1 flex-col transition-[padding] duration-300 ease-out",
+          pinned ? "lg:pl-64" : "lg:pl-[72px]",
+        )}
+      >
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-border bg-background/85 px-4 backdrop-blur-xl sm:px-8">
           <div className="flex items-center gap-3">
             <button
@@ -220,6 +273,14 @@ export function AppShell({ user, plan, usage, children }: ShellProps) {
 
         <main className="mx-auto w-full max-w-7xl flex-1 p-4 sm:p-8">{children}</main>
       </div>
+
+      {/* Mobile drawer (screens narrower than lg). */}
+      <Modal open={drawerOpen} onClose={() => setDrawerOpen(false)} title={APP_NAME} side="left">
+        <NavLinks expanded onNavigate={() => setDrawerOpen(false)} />
+        <div className="mt-4">
+          <UsageWidget plan={plan} usage={usage} />
+        </div>
+      </Modal>
     </div>
   );
 }
