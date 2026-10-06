@@ -18,6 +18,7 @@ let pageB: Page;
 let summaries: { id: string; title: string }[];
 
 test.beforeAll(async ({ browser }) => {
+  test.setTimeout(180_000); // 3 min: DB setup + two sign-ins on a slow CI machine
   userA = await createTestUser("alice");
   userB = await createTestUser("bob");
   summaries = await seedSummaries(userA.id);
@@ -31,7 +32,7 @@ test.beforeAll(async ({ browser }) => {
   await pageA.waitForURL("**/dashboard");
   await signIn(pageB, userB);
   await pageB.waitForURL("**/dashboard");
-}, 180_000);
+});
 
 test.afterAll(async () => {
   await contextA.close();
