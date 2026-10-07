@@ -65,7 +65,7 @@ The visual language is restrained and precise: obsidian backgrounds, ivory text,
 
 ### Summarization
 
-- **Three modes:** *Executive Brief* (bottom line, key facts, implications), *Key Points* (ordered bullets), and *Deep Dive* (structured analysis, paid plans).
+- **Three modes:** _Executive Brief_ (bottom line, key facts, implications), _Key Points_ (ordered bullets), and _Deep Dive_ (structured analysis, paid plans).
 - **Adjustable output:** three lengths, four tones, and twenty output languages, independent of the source language.
 - **Any source:** pasted text, public web links, and uploaded **PDF, DOCX, TXT, and Markdown** files (paid plans).
 - **Live streaming** with cancel. Cancelled and failed runs never consume quota.
@@ -96,36 +96,36 @@ The visual language is restrained and precise: obsidian backgrounds, ivory text,
 
 Limits live in one place, [`src/lib/plans.ts`](src/lib/plans.ts), and drive both enforcement and the copy on the pricing and billing pages, so the two cannot drift apart.
 
-| | Free | Pro | Team |
-|---|---|---|---|
-| Summaries per month | 10 | 300 | 1,500 |
-| Max input | 5,000 words | 50,000 words | 150,000 words |
-| Modes | Executive Brief, Key Points | All three | All three |
-| Sources | Text, web links | Text, links, files | Text, links, files |
-| File uploads | None | Up to 4 MB | Up to 4 MB |
-| AI model tier | Lite | Standard | Standard |
-| Price (USD / month) | 0 | 12 | 39 |
+|                     | Free                        | Pro                | Team               |
+| ------------------- | --------------------------- | ------------------ | ------------------ |
+| Summaries per month | 10                          | 300                | 1,500              |
+| Max input           | 5,000 words                 | 50,000 words       | 150,000 words      |
+| Modes               | Executive Brief, Key Points | All three          | All three          |
+| Sources             | Text, web links             | Text, links, files | Text, links, files |
+| File uploads        | None                        | Up to 4 MB         | Up to 4 MB         |
+| AI model tier       | Lite                        | Standard           | Standard           |
+| Price (USD / month) | 0                           | 12                 | 39                 |
 
 Prices are defined in [`src/lib/billing.ts`](src/lib/billing.ts) and created in Stripe by `npm run stripe:setup`. Paid plans are metered on the Stripe billing period; the Free plan on the UTC calendar month.
 
 ## Tech stack
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 16 (App Router, Turbopack), React 19 |
-| Language | TypeScript (strict, `noUncheckedIndexedAccess`) |
-| Styling | Tailwind CSS v4, shadcn/ui on Base UI, CSS-variable design tokens |
-| 3D | Three.js with React Three Fiber, lazy-loaded on the home page only |
-| Database | PostgreSQL on Neon, Prisma 7 with the Neon driver adapter |
-| Authentication | Better Auth (email and password, Google OAuth) |
-| AI | Google Gemini (`@google/genai`) |
-| Billing | Stripe Checkout, Customer Portal, webhooks |
-| Email | Resend |
-| Rate limiting | Upstash Redis (summaries, billing), database storage (authentication) |
-| Validation | Zod 4, `@t3-oss/env-nextjs` |
-| Content | `react-markdown` with `rehype-sanitize`; Mozilla Readability, linkedom, and mammoth for extraction |
-| Testing | Vitest, Playwright, axe-core |
-| Hosting | Vercel (Frankfurt), Vercel Cron |
+| Layer          | Technology                                                                                         |
+| -------------- | -------------------------------------------------------------------------------------------------- |
+| Framework      | Next.js 16 (App Router, Turbopack), React 19                                                       |
+| Language       | TypeScript (strict, `noUncheckedIndexedAccess`)                                                    |
+| Styling        | Tailwind CSS v4, shadcn/ui on Base UI, CSS-variable design tokens                                  |
+| 3D             | Three.js with React Three Fiber, lazy-loaded on the home page only                                 |
+| Database       | PostgreSQL on Neon, Prisma 7 with the Neon driver adapter                                          |
+| Authentication | Better Auth (email and password, Google OAuth)                                                     |
+| AI             | Google Gemini (`@google/genai`)                                                                    |
+| Billing        | Stripe Checkout, Customer Portal, webhooks                                                         |
+| Email          | Resend                                                                                             |
+| Rate limiting  | Upstash Redis (summaries, billing), database storage (authentication)                              |
+| Validation     | Zod 4, `@t3-oss/env-nextjs`                                                                        |
+| Content        | `react-markdown` with `rehype-sanitize`; Mozilla Readability, linkedom, and mammoth for extraction |
+| Testing        | Vitest, Playwright, axe-core                                                                       |
+| Hosting        | Vercel (Frankfurt), Vercel Cron                                                                    |
 
 ## Architecture
 
@@ -224,15 +224,15 @@ flowchart LR
 - **Node.js 22** and npm
 - Accounts for the services below. Everything has a free tier suitable for development.
 
-| Service | Used for |
-|---|---|
-| [Neon](https://neon.tech) | PostgreSQL database |
-| [Google AI Studio](https://aistudio.google.com) | Gemini API key |
-| [Google Cloud Console](https://console.cloud.google.com) | OAuth client for Google sign-in |
-| [Resend](https://resend.com) | Verification, reset, and deletion emails |
-| [Upstash](https://upstash.com) | Redis for rate limiting |
-| [Stripe](https://stripe.com) | Billing (stay in test mode) |
-| [Stripe CLI](https://docs.stripe.com/stripe-cli) | Forwarding webhooks to localhost |
+| Service                                                  | Used for                                 |
+| -------------------------------------------------------- | ---------------------------------------- |
+| [Neon](https://neon.tech)                                | PostgreSQL database                      |
+| [Google AI Studio](https://aistudio.google.com)          | Gemini API key                           |
+| [Google Cloud Console](https://console.cloud.google.com) | OAuth client for Google sign-in          |
+| [Resend](https://resend.com)                             | Verification, reset, and deletion emails |
+| [Upstash](https://upstash.com)                           | Redis for rate limiting                  |
+| [Stripe](https://stripe.com)                             | Billing (stay in test mode)              |
+| [Stripe CLI](https://docs.stripe.com/stripe-cli)         | Forwarding webhooks to localhost         |
 
 ### 1. Clone and install
 
@@ -252,7 +252,7 @@ Fill in `.env.local` using the [variable reference](#environment-variables). Gen
 
 Create **two Neon branches**, `production` and `dev`. Use the `dev` branch locally, with its **pooled** connection string as `DATABASE_URL` and its **direct** string as `DATABASE_URL_UNPOOLED`.
 
-For Google sign-in, create an OAuth client of type *Web application* with:
+For Google sign-in, create an OAuth client of type _Web application_ with:
 
 - Authorized JavaScript origin: `http://localhost:3000`
 - Authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
@@ -293,51 +293,51 @@ Open [http://localhost:3000](http://localhost:3000). Use Stripe's test card `424
 
 All variables are validated at build time by [`src/env.ts`](src/env.ts). A missing or malformed value fails the build with a clear message instead of failing in production.
 
-| Variable | Required | Purpose |
-|---|---|---|
-| `NEXT_PUBLIC_APP_URL` | Yes | Public origin, no trailing slash. Used for auth, redirects, and sitemap. |
-| `NEXT_PUBLIC_SUPPORT_EMAIL` | Yes | Contact address shown on legal pages and `security.txt`. |
-| `DATABASE_URL` | Yes | Neon **pooled** connection string, used by the running app. |
-| `DATABASE_URL_UNPOOLED` | Local only | Neon **direct** string, used by Prisma migrations. Never set on Vercel. |
-| `BETTER_AUTH_SECRET` | Yes | 32+ character session-signing secret. Use a different value per environment. |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Yes | Google OAuth client. |
-| `RESEND_API_KEY` | Yes | Resend API key (starts with `re_`). |
-| `EMAIL_FROM` | Yes | Sender, for example `Lumen <hello@your-domain.com>`. |
-| `GEMINI_API_KEY` | Yes | Google Gemini API key. |
-| `GEMINI_MODEL_LITE` | No | Free-tier model. Default `gemini-3.5-flash-lite`. |
-| `GEMINI_MODEL_STANDARD` | No | Paid-tier model. Default `gemini-3.8-flash`. |
-| `GEMINI_MODEL_FALLBACK` | No | Used if the primary model is unavailable. Default `gemini-3.5-flash`. |
-| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Yes | Redis REST credentials for rate limiting. |
-| `STRIPE_SECRET_KEY` | Yes | Stripe secret key (`sk_test_...` until launch). |
-| `STRIPE_WEBHOOK_SECRET` | Yes | Webhook signing secret (`whsec_...`). |
-| `CRON_SECRET` | Yes | 32+ character secret. Vercel sends it to authenticate cron calls. |
+| Variable                                              | Required   | Purpose                                                                      |
+| ----------------------------------------------------- | ---------- | ---------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_APP_URL`                                 | Yes        | Public origin, no trailing slash. Used for auth, redirects, and sitemap.     |
+| `NEXT_PUBLIC_SUPPORT_EMAIL`                           | Yes        | Contact address shown on legal pages and `security.txt`.                     |
+| `DATABASE_URL`                                        | Yes        | Neon **pooled** connection string, used by the running app.                  |
+| `DATABASE_URL_UNPOOLED`                               | Local only | Neon **direct** string, used by Prisma migrations. Never set on Vercel.      |
+| `BETTER_AUTH_SECRET`                                  | Yes        | 32+ character session-signing secret. Use a different value per environment. |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`           | Yes        | Google OAuth client.                                                         |
+| `RESEND_API_KEY`                                      | Yes        | Resend API key (starts with `re_`).                                          |
+| `EMAIL_FROM`                                          | Yes        | Sender, for example `Lumen <hello@your-domain.com>`.                         |
+| `GEMINI_API_KEY`                                      | Yes        | Google Gemini API key.                                                       |
+| `GEMINI_MODEL_LITE`                                   | No         | Free-tier model. Default `gemini-3.5-flash-lite`.                            |
+| `GEMINI_MODEL_STANDARD`                               | No         | Paid-tier model. Default `gemini-3.8-flash`.                                 |
+| `GEMINI_MODEL_FALLBACK`                               | No         | Used if the primary model is unavailable. Default `gemini-3.5-flash`.        |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Yes        | Redis REST credentials for rate limiting.                                    |
+| `STRIPE_SECRET_KEY`                                   | Yes        | Stripe secret key (`sk_test_...` until launch).                              |
+| `STRIPE_WEBHOOK_SECRET`                               | Yes        | Webhook signing secret (`whsec_...`).                                        |
+| `CRON_SECRET`                                         | Yes        | 32+ character secret. Vercel sends it to authenticate cron calls.            |
 
 Model identifiers are configuration on purpose: Google retires models on a published schedule, and changing one should not require a code change.
 
 ## Scripts
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start the development server |
-| `npm run build` / `npm start` | Production build and server |
-| `npm run typecheck` | Generate route types, then run the TypeScript compiler |
-| `npm run lint` | ESLint |
-| `npm run format` / `format:check` | Prettier, write or verify |
-| `npm test` | Unit tests (no network or database) |
-| `npm run test:db` | Database integration tests, against your **dev** branch |
-| `npm run e2e` | Playwright browser tests against the production build |
-| `npm run e2e:install` | One-time Chromium install for Playwright |
-| `npm run db:migrate` | Create and apply a migration (development) |
-| `npm run db:deploy` | Apply migrations (production, use the direct URL) |
-| `npm run db:generate` | Regenerate the Prisma client |
-| `npm run db:studio` | Open Prisma Studio |
-| `npm run db:check` | Verify the database connection and constraints |
-| `npm run gemini:check` | Live smoke test of the AI pipeline and model IDs |
+| Command                                  | Description                                               |
+| ---------------------------------------- | --------------------------------------------------------- |
+| `npm run dev`                            | Start the development server                              |
+| `npm run build` / `npm start`            | Production build and server                               |
+| `npm run typecheck`                      | Generate route types, then run the TypeScript compiler    |
+| `npm run lint`                           | ESLint                                                    |
+| `npm run format` / `format:check`        | Prettier, write or verify                                 |
+| `npm test`                               | Unit tests (no network or database)                       |
+| `npm run test:db`                        | Database integration tests, against your **dev** branch   |
+| `npm run e2e`                            | Playwright browser tests against the production build     |
+| `npm run e2e:install`                    | One-time Chromium install for Playwright                  |
+| `npm run db:migrate`                     | Create and apply a migration (development)                |
+| `npm run db:deploy`                      | Apply migrations (production, use the direct URL)         |
+| `npm run db:generate`                    | Regenerate the Prisma client                              |
+| `npm run db:studio`                      | Open Prisma Studio                                        |
+| `npm run db:check`                       | Verify the database connection and constraints            |
+| `npm run gemini:check`                   | Live smoke test of the AI pipeline and model IDs          |
 | `npm run extract:check -- <url or file>` | Try URL or document extraction, including blocked targets |
-| `npm run ratelimit:check` | Verify the Redis rate limiter |
-| `npm run stripe:setup` | Create Stripe products and prices (test mode by default) |
-| `npm run seed:demo -- <email>` | Add or remove sample summaries for an account |
-| `npm run launch:check` | Report what still blocks a production launch |
+| `npm run ratelimit:check`                | Verify the Redis rate limiter                             |
+| `npm run stripe:setup`                   | Create Stripe products and prices (test mode by default)  |
+| `npm run seed:demo -- <email>`           | Add or remove sample summaries for an account             |
+| `npm run launch:check`                   | Report what still blocks a production launch              |
 
 ## Testing
 
@@ -363,19 +363,19 @@ Quality is enforced in four layers.
 
 All routes are same-origin and cookie-authenticated unless noted. Errors share one shape: `{ "error": { "code", "message", ... } }`.
 
-| Method | Route | Description |
-|---|---|---|
-| `POST` | `/api/summaries` | Create a summary and stream it as newline-delimited JSON. Accepts JSON (text, URL) or `multipart/form-data` (file). |
-| `GET` | `/api/summaries` | List summaries. Query: `q`, `mode`, `source`, `favorite`, `sort`, `page`, `pageSize`. |
-| `GET` `PATCH` `DELETE` | `/api/summaries/:id` | Read, rename or favorite, and delete one summary. |
-| `GET` | `/api/usage` | Current plan, limits, usage, and subscription state. |
-| `GET` `PUT` | `/api/preferences` | Read and save default mode, length, tone, and language. |
-| `POST` | `/api/billing/checkout` | Create a Stripe Checkout session for `pro` or `team`. |
-| `POST` | `/api/billing/portal` | Create a Customer Portal session. |
-| `POST` | `/api/stripe/webhook` | Stripe events. Requires a valid signature. |
-| `GET` | `/api/cron/cleanup` | Maintenance job. Requires the cron bearer secret. |
-| `GET` | `/api/health` | Liveness check. |
-| `*` | `/api/auth/*` | Authentication, handled by Better Auth. |
+| Method                 | Route                   | Description                                                                                                         |
+| ---------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `POST`                 | `/api/summaries`        | Create a summary and stream it as newline-delimited JSON. Accepts JSON (text, URL) or `multipart/form-data` (file). |
+| `GET`                  | `/api/summaries`        | List summaries. Query: `q`, `mode`, `source`, `favorite`, `sort`, `page`, `pageSize`.                               |
+| `GET` `PATCH` `DELETE` | `/api/summaries/:id`    | Read, rename or favorite, and delete one summary.                                                                   |
+| `GET`                  | `/api/usage`            | Current plan, limits, usage, and subscription state.                                                                |
+| `GET` `PUT`            | `/api/preferences`      | Read and save default mode, length, tone, and language.                                                             |
+| `POST`                 | `/api/billing/checkout` | Create a Stripe Checkout session for `pro` or `team`.                                                               |
+| `POST`                 | `/api/billing/portal`   | Create a Customer Portal session.                                                                                   |
+| `POST`                 | `/api/stripe/webhook`   | Stripe events. Requires a valid signature.                                                                          |
+| `GET`                  | `/api/cron/cleanup`     | Maintenance job. Requires the cron bearer secret.                                                                   |
+| `GET`                  | `/api/health`           | Liveness check.                                                                                                     |
+| `*`                    | `/api/auth/*`           | Authentication, handled by Better Auth.                                                                             |
 
 **Status codes:** `401` not signed in · `403` wrong origin · `400` invalid input · `402` plan or quota limit (includes `upgradeTo`) · `413` too large · `415` unsupported type · `422` unreadable source · `429` rate limited (includes `Retry-After`).
 
@@ -385,19 +385,19 @@ All routes are same-origin and cookie-authenticated unless noted. Errors share o
 
 Lumen began as a rebuild of a prototype whose security was fundamentally unsound, so these protections were designed in and are verified by tests rather than assumed.
 
-| Area | Protection |
-|---|---|
-| **Sessions** | Better Auth sessions validated against the database on every request. A proxy gives fast redirects, but never grants access on its own. |
-| **Authentication** | Required email verification, hashed passwords, per-endpoint rate limits, identical errors for wrong password and unknown email, redirect targets validated against open redirects. |
-| **Authorization** | Every query is scoped to the owning user. Another user's resource returns `404`. |
-| **Plans and quota** | Enforced on the server. Quota is claimed with one atomic conditional update, so concurrent requests cannot overspend. |
-| **Billing** | Webhook signatures are mandatory. Events are claimed transactionally and state is re-fetched from Stripe, so replays and reordering are harmless. Checkout and portal redirect URLs come from configuration, never from the request. |
-| **URL fetching (SSRF)** | Only `http` and `https` on ports 80 and 443, no IP literals or internal hostnames, every connection pinned to a public address at connect time, redirects re-validated hop by hop, and size and time caps. |
-| **Files** | Types are identified from content, not names or MIME headers. Size is capped per plan. |
-| **AI safety** | Source text is delimited and declared untrusted in the prompt. Rendered output is sanitized Markdown with images disabled. |
-| **Headers** | A Content Security Policy that blocks foreign scripts, plugins, framing, and form targets, plus HSTS, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, and COOP. |
-| **Configuration** | The build fails on missing or malformed environment variables. No secrets in the client bundle. |
-| **Data lifecycle** | Daily cleanup of stale runs, failed summaries, expired tokens, and old counters. Account deletion cascades through all of a user's data and deletes the Stripe customer. |
+| Area                    | Protection                                                                                                                                                                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Sessions**            | Better Auth sessions validated against the database on every request. A proxy gives fast redirects, but never grants access on its own.                                                                                              |
+| **Authentication**      | Required email verification, hashed passwords, per-endpoint rate limits, identical errors for wrong password and unknown email, redirect targets validated against open redirects.                                                   |
+| **Authorization**       | Every query is scoped to the owning user. Another user's resource returns `404`.                                                                                                                                                     |
+| **Plans and quota**     | Enforced on the server. Quota is claimed with one atomic conditional update, so concurrent requests cannot overspend.                                                                                                                |
+| **Billing**             | Webhook signatures are mandatory. Events are claimed transactionally and state is re-fetched from Stripe, so replays and reordering are harmless. Checkout and portal redirect URLs come from configuration, never from the request. |
+| **URL fetching (SSRF)** | Only `http` and `https` on ports 80 and 443, no IP literals or internal hostnames, every connection pinned to a public address at connect time, redirects re-validated hop by hop, and size and time caps.                           |
+| **Files**               | Types are identified from content, not names or MIME headers. Size is capped per plan.                                                                                                                                               |
+| **AI safety**           | Source text is delimited and declared untrusted in the prompt. Rendered output is sanitized Markdown with images disabled.                                                                                                           |
+| **Headers**             | A Content Security Policy that blocks foreign scripts, plugins, framing, and form targets, plus HSTS, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, and COOP.                                                                  |
+| **Configuration**       | The build fails on missing or malformed environment variables. No secrets in the client bundle.                                                                                                                                      |
+| **Data lifecycle**      | Daily cleanup of stale runs, failed summaries, expired tokens, and old counters. Account deletion cascades through all of a user's data and deletes the Stripe customer.                                                             |
 
 **Known trade-offs.** The CSP permits inline scripts because Next.js requires them for hydration, and moving to nonces would cost static rendering on marketing pages. The rate limiter fails open if Redis is unreachable, because the database quota remains the hard cost ceiling. A decompression-bomb DOCX is bounded by the file-size cap and function memory rather than by a dedicated check.
 
@@ -423,10 +423,10 @@ Preview deployments are for reviewing the interface. Authentication callbacks ar
 
 ## Operations and launch
 
-| Document | Contents |
-|---|---|
-| [`docs/RUNBOOK.md`](docs/RUNBOOK.md) | Services and failure modes, deploying and rolling back, incident playbooks, secret rotation, data handling |
-| [`docs/LAUNCH.md`](docs/LAUNCH.md) | The pre-launch checklist: billed AI key, custom domain and email, live Stripe, legal review, platform plans |
+| Document                             | Contents                                                                                                    |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| [`docs/RUNBOOK.md`](docs/RUNBOOK.md) | Services and failure modes, deploying and rolling back, incident playbooks, secret rotation, data handling  |
+| [`docs/LAUNCH.md`](docs/LAUNCH.md)   | The pre-launch checklist: billed AI key, custom domain and email, live Stripe, legal review, platform plans |
 
 `npm run launch:check` reports the blockers a script can detect. It is expected to fail until the project is configured for production.
 
@@ -434,15 +434,15 @@ Preview deployments are for reviewing the interface. Authentication callbacks ar
 
 The interface is built from a small set of design tokens defined in [`src/app/globals.css`](src/app/globals.css) and mapped onto Tailwind and shadcn/ui.
 
-| Token | Value | Use |
-|---|---|---|
-| Obsidian | `#0A0A0B` | Page background |
-| Surface | `#111114` | Cards and panels |
-| Ivory | `#F5F1E8` | Primary text |
+| Token          | Value     | Use                             |
+| -------------- | --------- | ------------------------------- |
+| Obsidian       | `#0A0A0B` | Page background                 |
+| Surface        | `#111114` | Cards and panels                |
+| Ivory          | `#F5F1E8` | Primary text                    |
 | Champagne gold | `#C8A96A` | Accents, focus, primary actions |
-| Gold light | `#E6D3A3` | Highlights, shimmer |
-| Gold deep | `#8F7638` | Gradient depth |
-| Emerald accent | `#0F3D33` | Atmospheric glow |
+| Gold light     | `#E6D3A3` | Highlights, shimmer             |
+| Gold deep      | `#8F7638` | Gradient depth                  |
+| Emerald accent | `#0F3D33` | Atmospheric glow                |
 
 Typography pairs **Cormorant Garamond** for display with **Inter** for text. Surfaces use glass utilities, a fixed film-grain overlay, and a slow, weighted easing curve. All motion respects `prefers-reduced-motion`, the 3D hero is skipped on reduced motion, Data Saver, and devices without WebGL, and a forced-colors fallback keeps gradient text readable.
 

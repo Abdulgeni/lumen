@@ -4,6 +4,7 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { Logo } from "@/components/brand/logo";
 import { Modal } from "@/components/ui/modal";
 import { APP_NAME, MARKETING_NAV, MARKETING_ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -16,12 +17,8 @@ export function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-8">
-        <Link
-          href={MARKETING_ROUTES.home}
-          aria-label={`${APP_NAME} home`}
-          className="gold-shimmer font-display text-2xl font-medium tracking-[0.3em] uppercase"
-        >
-          {APP_NAME}
+        <Link href={MARKETING_ROUTES.home} aria-label={`${APP_NAME} home`}>
+          <Logo />
         </Link>
 
         <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">

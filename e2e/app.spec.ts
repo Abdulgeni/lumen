@@ -70,12 +70,12 @@ test("a forged session cookie does not grant access", async ({ browser, baseURL 
 
 test("wrong password and unknown email give the same message", async ({ page }) => {
   const attempt = async (email: string, password: string) => {
-    await page.goto("/sign-in");
+    await page.goto("/sign-in", { waitUntil: "networkidle" });
     await page.getByLabel("Email", { exact: true }).fill(email);
     await page.getByLabel("Password", { exact: true }).fill(password);
     await page.getByRole("button", { name: "Sign in", exact: true }).click();
     const alert = page.getByRole("alert").filter({ hasText: /\w/ }).first();
-    await expect(alert).toBeVisible();
+    await expect(alert).toBeVisible({ timeout: 15_000 });
     return (await alert.textContent())?.trim();
   };
   const wrongPassword = await attempt(userA.email, "definitely-wrong-password");
@@ -108,7 +108,7 @@ test("every app page renders for a signed-in user", async () => {
     await expect(
       pageB.getByRole("heading", { level: 1, name: new RegExp(heading) }),
       path,
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 20_000 });
   }
 });
 
@@ -123,34 +123,42 @@ test("the free plan locks paid options and validates input before any request", 
 });
 
 test("the archive searches, opens, and deletes a summary", async () => {
-  // pageA is already signed in from beforeAll.
+  // Move the mouse to a neutral position so a leftover hover does not leave the
+  // sidebar expanded over the click target.
+  await pageA.mouse.move(800, 400);
+
+  // Neon's free tier suspends compute between requests, so the first query of a
+  // test run can take several seconds to wake the database. Every assertion here
+  // gets an explicit generous timeout so the tests are not flaky on cold start.
   await pageA.goto("/dashboard/summaries", { waitUntil: "networkidle" });
-  await expect(pageA.getByText("Quarterly harbor report")).toBeVisible();
+  await expect(pageA.getByText("Quarterly harbor report")).toBeVisible({ timeout: 20_000 });
 
   await pageA.getByRole("searchbox", { name: "Search the archive" }).fill("coffee");
   await pageA.keyboard.press("Enter");
-  await expect(pageA).toHaveURL(/q=coffee/);
-  await expect(pageA.getByText("Coffee wholesale notes")).toBeVisible();
+  await expect(pageA).toHaveURL(/q=coffee/, { timeout: 20_000 });
+  await expect(pageA.getByText("Coffee wholesale notes")).toBeVisible({ timeout: 20_000 });
   await expect(pageA.getByText("Quarterly harbor report")).toHaveCount(0);
 
+  await pageA.mouse.move(800, 400);
   await pageA.goto("/dashboard/summaries", { waitUntil: "networkidle" });
+
+  // Click the summary by its visible title. Do not select by position: the
+  // archive sorts newest first, so the first link is not always the one you want.
   const auditLink = pageA.getByRole("link", { name: "Security audit summary" }).first();
-  await expect(auditLink).toBeVisible();
+  await expect(auditLink).toBeVisible({ timeout: 20_000 });
   await auditLink.click();
-  await expect(pageA).toHaveURL(/\/dashboard\/summaries\/.+/, { timeout: 15_000 });
+
   await expect(
     pageA.getByRole("heading", { level: 1, name: "Security audit summary" }),
-  ).toBeVisible();
+  ).toBeVisible({ timeout: 30_000 });
 
+  // Open the delete modal, confirm, wait for the success toast.
   await pageA.getByRole("button", { name: "Delete", exact: true }).first().click();
-  await expect(pageA.getByRole("dialog")).toBeVisible();
-
-  // Wait for the success toast — a more reliable signal than the URL, which can lag
-  // behind a client-side router.replace.
+  await expect(pageA.getByRole("dialog")).toBeVisible({ timeout: 15_000 });
   await pageA.getByRole("dialog").getByRole("button", { name: "Delete", exact: true }).click();
-  await expect(pageA.getByText("Summary deleted.")).toBeVisible({ timeout: 10_000 });
+  await expect(pageA.getByText("Summary deleted.")).toBeVisible({ timeout: 20_000 });
 
-  // Confirm the summary is gone by loading the archive fresh.
+  // Reload the archive fresh and confirm the summary is gone.
   await pageA.goto("/dashboard/summaries", { waitUntil: "networkidle" });
   await expect(pageA.getByText("Security audit summary")).toHaveCount(0);
 });
@@ -163,7 +171,7 @@ test("one user cannot open another user's summary, in the app or the API", async
   // call notFound(), so the HTTP status is 200 even though the not-found page renders.
   // Assert on the content, not the status.
   await pageB.goto(`/dashboard/summaries/${target.id}`);
-  await expect(pageB.getByText("could not be found")).toBeVisible({ timeout: 10_000 });
+  await expect(pageB.getByText("could not be found")).toBeVisible({ timeout: 15_000 });
   await expect(
     pageB.getByRole("heading", { level: 1, name: "Quarterly harbor report" }),
   ).toHaveCount(0);
@@ -189,7 +197,7 @@ test("signing out ends the session", async () => {
   await pageA.goto("/dashboard", { waitUntil: "networkidle" });
   await pageA.locator("header button[aria-expanded]").click();
   await pageA.getByRole("button", { name: "Sign out" }).click();
-  await expect(pageA).toHaveURL("http://localhost:3000/");
+  await expect(pageA).toHaveURL("http://localhost:3000/", { timeout: 20_000 });
   await pageA.goto("/dashboard");
-  await expect(pageA).toHaveURL(/\/sign-in/);
+  await expect(pageA).toHaveURL(/\/sign-in/, { timeout: 15_000 });
 });

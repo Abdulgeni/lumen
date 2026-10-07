@@ -7,7 +7,12 @@ export default defineConfig({
   retries: 1,
   timeout: 120_000,
   reporter: [["list"]],
-  use: { baseURL: "http://localhost:3000", trace: "retain-on-failure" },
+  use: {
+    baseURL: "http://localhost:3000",
+    trace: "retain-on-failure",
+    navigationTimeout: 30_000,
+    actionTimeout: 15_000,
+  },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
     command: "npm run start",

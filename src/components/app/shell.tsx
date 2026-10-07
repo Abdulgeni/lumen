@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import { LogoMark } from "@/components/brand/logo";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
@@ -32,7 +33,6 @@ const NAV = [
   { label: "Settings", href: ROUTES.settings, icon: Settings, exact: false },
 ] as const;
 
-/** Widths in pixels. Collapsed keeps icons visible; expanded reveals the labels. */
 const WIDTH_COLLAPSED = 72;
 const WIDTH_EXPANDED = 256;
 
@@ -124,10 +124,8 @@ export function AppShell({ user, plan, usage, children }: ShellProps) {
   const [pinned, setPinned] = useState(false);
   const leaveTimer = useRef<number | null>(null);
 
-  // The sidebar expands when hovered or pinned. Everything else follows from this.
   const expanded = hovering || pinned;
 
-  // Grace period so a brief pointer exit does not collapse the sidebar.
   function onEnter() {
     if (leaveTimer.current !== null) {
       window.clearTimeout(leaveTimer.current);
@@ -162,16 +160,13 @@ export function AppShell({ user, plan, usage, children }: ShellProps) {
         className="fixed top-0 left-0 z-40 hidden h-dvh flex-col justify-between overflow-hidden border-r border-border bg-background shadow-[2px_0_12px_rgba(0,0,0,0.35)] transition-[width] duration-300 ease-out lg:flex"
       >
         <div>
-          {/* Header: logo mark always visible; wordmark and pin only when expanded. */}
           <div className="flex h-16 items-center justify-between border-b border-border px-4">
             <Link
               href={ROUTES.dashboard}
               className="flex min-w-0 items-center gap-2.5"
               aria-label={`${APP_NAME} overview`}
             >
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-xl border border-gold/40 bg-secondary shadow-[0_0_12px_rgba(200,169,106,0.15)]">
-                <span className="font-display text-base font-semibold text-gold-light">L</span>
-              </span>
+              <LogoMark className="h-8 w-auto shrink-0 drop-shadow-[0_0_8px_rgba(200,169,106,0.3)]" />
               <span
                 className={cn(
                   "truncate font-display text-xl font-semibold tracking-tight transition-opacity duration-200",
@@ -200,7 +195,6 @@ export function AppShell({ user, plan, usage, children }: ShellProps) {
           <NavLinks expanded={expanded} />
         </div>
 
-        {/* Footer: compact icon when collapsed, full usage widget when expanded. */}
         <div className="border-t border-border p-3">
           {expanded ? (
             <UsageWidget plan={plan} usage={usage} />
@@ -217,8 +211,6 @@ export function AppShell({ user, plan, usage, children }: ShellProps) {
         </div>
       </aside>
 
-      {/* Main column: always leaves room for the collapsed width;
-          when pinned, the padding grows to match the expanded width. */}
       <div
         className={cn(
           "flex min-w-0 flex-1 flex-col transition-[padding] duration-300 ease-out",
@@ -274,7 +266,6 @@ export function AppShell({ user, plan, usage, children }: ShellProps) {
         <main className="mx-auto w-full max-w-7xl flex-1 p-4 sm:p-8">{children}</main>
       </div>
 
-      {/* Mobile drawer (screens narrower than lg). */}
       <Modal open={drawerOpen} onClose={() => setDrawerOpen(false)} title={APP_NAME} side="left">
         <NavLinks expanded onNavigate={() => setDrawerOpen(false)} />
         <div className="mt-4">
