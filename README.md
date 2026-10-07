@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./banner.svg" alt="Lumen: every long read, distilled to what matters" width="100%" />
+<img src="docs/images/banner.svg" alt="Lumen: every long read, distilled to what matters" width="100%" />
 
 <br />
 
